@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: openshift-client-kubecfg
+spec:
+  inputs:
+    resources:
+      - name: cluster
+        type: cluster
+    params:
+      - name: ARGS
+        description: The OpenShift CLI arguments to run
+        type: array
+        default:
+        - "help"
+  steps:
+    - command: 
+      - /usr/bin/oc
+      args:
+      - --insecure-skip-tls-verify=true
+      - $(inputs.params.ARGS)
+      env:
+      - name: "KUBECONFIG"
+        value: "/workspace/$(inputs.resources.cluster.name)/kubeconfig"
+      - name: "KUBE_CONTEXT"
+        value: "$(inputs.resources.cluster.name)"
+      name: oc
+      image: quay.io/openshift/origin-cli:latest

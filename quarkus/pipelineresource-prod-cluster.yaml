@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: prod-cluster
+spec:
+  type: cluster
+  params:
+    - name: name
+      value: prod-cluster
+    - name: username
+      value: pipeline
+  secrets:
+    - fieldName: token
+      secretKey: tokenKey
+      secretName: cluster-prod-secret
+    - fieldName: cadata
+      secretKey: cadataKey
+      secretName: cluster-prod-secret
+    - fieldName: url
+      secretKey: url
+      secretName: cluster-prod-secret
+    - fieldName: namespace
+      secretKey: namespace
+      secretName: cluster-prod-secret

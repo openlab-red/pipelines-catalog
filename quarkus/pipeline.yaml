@@ -1,0 +1,96 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  generation: 1
+  name: quarkus-deploy-new
+  selfLink: /apis/tekton.dev/v1alpha1/namespaces/myproject/pipelines/quarkus-deploy-new
+spec:
+  params:
+  - default: quarkus
+    name: APP_NAME
+    type: string
+  resources:
+  - name: app-git
+    type: git
+  - name: app-image
+    type: image
+  - name: prod-cluster
+    type: cluster
+  tasks:
+  - name: unit-test
+    params:
+    - name: GOALS
+      value:
+      - package
+    resources:
+      inputs:
+      - name: source
+        resource: app-git
+    taskRef:
+      name: mvn
+  - name: build-s2i
+    resources:
+      inputs:
+      - name: source
+        resource: app-git
+      outputs:
+      - name: image
+        resource: app-image
+    runAfter:
+    - unit-test
+    taskRef:
+      name: s2i-quarkus
+  - name: deploy-dev
+    params:
+    - name: ARGS
+      value:
+      - rollout
+      - latest
+      - $(params.APP_NAME)
+    runAfter:
+    - build-s2i
+    taskRef:
+      name: openshift-client
+
+  #- name: integration-tests
+  #- name: tag-image-prod
+
+  - name: deploy-prod
+    params:
+    - name: ARGS
+      value:
+      - rollout
+      - latest
+      - $(params.APP_NAME)
+    resources:
+      inputs:
+      - name: cluster
+        resource: prod-cluster
+    runAfter:
+    - build-s2i
+    - deploy-dev
+    taskRef:
+      name: openshift-client-kubecfg
+  #  conditions:
+  #  - conditionRef: "app-deployed"
+  #    params:
+  #    - name: APP_NAME
+  #      value: "$(params.APP_NAME)"
+  #    resources:
+  #    - name: cluster
+  #      resource: prod-cluster
+  #- name: deploy-prod-new
+  #  params:
+  #  - name: APP_NAME
+  #    value: $(params.APP_NAME)
+  #  resources:
+  #    inputs:
+  #    - name: image
+  #      resource: app-image
+  #    - name: cluster
+  #      resource: prod-cluster
+  #  runAfter:
+  #  - build-s2i
+  #  - deploy-dev
+  #  taskRef:
+  #    name: deploy-prod-new

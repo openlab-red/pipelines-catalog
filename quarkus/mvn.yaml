@@ -1,0 +1,35 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: mvn
+spec:
+  inputs:
+    params:
+      - name: GOALS
+        description: The Maven goals to run
+        type: array
+        default:
+        - "package"
+      - name: MAVEN_MIRROR_URL
+        description: The Maven Mirror to use
+        default: 'https://repo1.maven.org/maven2' 
+    resources:
+    - name: source
+      targetPath: /
+      type: git
+  steps:
+  - name: test
+    image: quay.io/rhdevelopers/tutorial-tools:0.0.3
+    command:
+    - /usr/bin/mvn
+    args:
+      - "$(inputs.params.GOALS)"
+    volumeMounts:
+      - name: m2-repository
+        mountPath: /.m2
+    env:
+     - name: MAVEN_MIRROR_URL
+       value: "$(inputs.params.MAVEN_MIRROR_URL)"
+  volumes:
+    - name: m2-repository
+      emptyDir: {}
