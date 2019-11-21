@@ -23,7 +23,7 @@ oc create -f pipelineresource-prod-cluster-secret.yaml
 oc create -f pipelineresource-prod-cluster.yaml
 ```
 
-Still on Dev cluster, create the necessary tasks and the pipeline
+Still on Dev cluster, create the necessary tasks, condition and the pipeline
 
 ```
 oc create -f openshift-client.yaml
@@ -31,6 +31,7 @@ oc create -f openshift-client-kubecfg.yaml
 oc create -f s2i-quarkus-task.yaml
 oc create -f mvn.yaml
 
+oc create -f condition-app-prod-new.yaml
 oc create -f pipeline.yaml
 ```
 
