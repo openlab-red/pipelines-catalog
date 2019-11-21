@@ -37,5 +37,5 @@ oc create -f pipeline.yaml
 Run the pipeline
 
 ```
-tkn pipeline start quarkus-deploy -p "MAVEN_MIRROR_URL=http://nexus3.labs:8081/nexus/content/groups/public" -p ""  -s pipeline
+tkn pipeline start quarkus-deploy -p "MAVEN_MIRROR_URL=http://nexus3.labs:8081/nexus/content/groups/public" -p "APP_NAME=quarkus"  -s pipeline
 ```
