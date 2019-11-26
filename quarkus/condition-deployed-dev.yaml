@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Condition
+metadata:
+  name: deployed-dev
+spec:
+  params:
+    - name: "APP_NAME"
+      type: string
+  check:
+    image: quay.io/openshift/origin-cli:latest
+    command: ["/usr/bin/oc"]
+    args: 
+    - get 
+    - deploymentconfig
+    - $(params.APP_NAME)

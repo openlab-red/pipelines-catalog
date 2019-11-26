@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1alpha1
 kind: Pipeline
 metadata:
   generation: 1
-  name: quarkus-deploy-new
+  name: quarkus-deploy
   selfLink: /apis/tekton.dev/v1alpha1/namespaces/myproject/pipelines/quarkus-deploy-new
 spec:
   params:
@@ -51,9 +51,12 @@ spec:
     - build-s2i
     taskRef:
       name: openshift-client
+    conditions:
+    - conditionRef: "deployed-dev"
+      params:
+      - name: APP_NAME
+        value: "$(params.APP_NAME)"
 
-  #- name: integration-tests
-  #- name: tag-image-prod
 
   - name: deploy-prod
     params:
@@ -71,26 +74,11 @@ spec:
     - deploy-dev
     taskRef:
       name: openshift-client-kubecfg
-  #  conditions:
-  #  - conditionRef: "app-deployed"
-  #    params:
-  #    - name: APP_NAME
-  #      value: "$(params.APP_NAME)"
-  #    resources:
-  #    - name: cluster
-  #      resource: prod-cluster
-  #- name: deploy-prod-new
-  #  params:
-  #  - name: APP_NAME
-  #    value: $(params.APP_NAME)
-  #  resources:
-  #    inputs:
-  #    - name: image
-  #      resource: app-image
-  #    - name: cluster
-  #      resource: prod-cluster
-  #  runAfter:
-  #  - build-s2i
-  #  - deploy-dev
-  #  taskRef:
-  #    name: deploy-prod-new
+    conditions:
+    - conditionRef: "deployed-prod"
+      params:
+      - name: APP_NAME
+        value: "$(params.APP_NAME)"
+      resources:
+      - name: cluster
+        resource: prod-cluster

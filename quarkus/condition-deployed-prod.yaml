@@ -1,0 +1,24 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Condition
+metadata:
+  name: deployed-prod
+spec:
+  resources:
+    - name: cluster
+      type: cluster
+  params:
+    - name: "APP_NAME"
+      type: string
+  check:
+    image: quay.io/openshift/origin-cli:latest
+    command: ["/usr/bin/oc"]
+    args: 
+    - get 
+    - deploymentconfig
+    - $(params.APP_NAME)
+    - --insecure-skip-tls-verify=true
+    env:
+    - name: "KUBECONFIG"
+      value: "/workspace/$(inputs.resources.cluster.name)/kubeconfig"
+    - name: "KUBE_CONTEXT"
+      value: "$(inputs.resources.cluster.name)"
