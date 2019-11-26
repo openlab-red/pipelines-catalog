@@ -1,0 +1,86 @@
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: quarkus
+  name: quarkus
+spec:
+  replicas: 1
+  selector:
+    app: quarkus
+  triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        containerNames:
+          - quarkus
+        from:
+          kind: ImageStreamTag
+          name: quarkus:latest
+      type: ImageChange
+  strategy:
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        app: quarkus
+    spec:
+      containers:
+        - name: quarkus
+          image: ''
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            timeoutSeconds: 5
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          securityContext:
+            privileged: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quarkus
+  labels:
+    app: quarkus
+spec:
+  ports:
+    - name: httpo
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: quarkus
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: quarkus
+  labels:
+    app: quarkus
+spec:
+  to:
+    kind: Service
+    name: quarkus
+    weight: 100
+  port:
+    targetPort: http
