@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: quarkus
-          image: 
+          image: ''
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
