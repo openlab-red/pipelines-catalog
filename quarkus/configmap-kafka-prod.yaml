@@ -2,7 +2,7 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: quarkus-config
-  namespace: mynamespace
+  namespace: myuser-namespace
 data:
   application.properties: >-
     # drop and create the database at startup (use `update` to only update the
