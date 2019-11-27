@@ -1,4 +1,11 @@
 ---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    app: people
+  name: people
+---
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
