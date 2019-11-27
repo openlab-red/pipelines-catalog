@@ -12,7 +12,7 @@ spec:
     - name: namespace
       value: <prod-namespace-prod-cluster>
     - name: url
-      value: {{OCP_API_PROD}}
+      value: <prod-api-url>
   secrets:
     - fieldName: token
       secretKey: tokenKey
