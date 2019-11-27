@@ -5,14 +5,13 @@ if [[ $# -ne 2 ]]; then
 
 ERR: Please provide the API URL and the Namespace of the Prod Cluster as arguments
 
-  ./gen-prod-secret.sh <API_URL_PROD_CLUSTER> <NAMESPACE_PROD_CLUSTER>
+  ./gen-prod-secret.sh <NAMESPACE_PROD_CLUSTER>
 
 EOF
   exit 99
 fi
 
-export URL=`echo $1|base64`
-export NAMESPACE=`echo $2|base64`
+export NAMESPACE=$1
 
 SERVICE_ACCOUNT_SECRET_NAME=$(oc get serviceaccount/pipeline -n ${NAMESPACE} -o jsonpath='{.secrets[0].name}')
 CA_DATA=$(kubectl get secret/$SERVICE_ACCOUNT_SECRET_NAME -n ${NAMESPACE} -o jsonpath="{.data.ca\.crt}")
@@ -27,8 +26,6 @@ type: Opaque
 data:
   cadataKey: $CA_DATA
   tokenKey: $TOKEN
-  namespace: $NAMESPACE
-  url: $URL
 EOF
 
 # Reference:
