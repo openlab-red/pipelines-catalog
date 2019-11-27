@@ -56,8 +56,6 @@ spec:
       params:
       - name: APP_NAME
         value: "$(params.APP_NAME)"
-
-
   - name: deploy-prod
     params:
     - name: ARGS
