@@ -3,21 +3,14 @@ apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
   labels:
-    app: quarkus
-  name: quarkus
+    app: people
+  name: people
 spec:
   replicas: 1
   selector:
     app: quarkus
   triggers:
     - type: ConfigChange
-    - imageChangeParams:
-        containerNames:
-          - quarkus
-        from:
-          kind: ImageStreamTag
-          name: quarkus:latest
-      type: ImageChange
   strategy:
     type: Rolling
   template:
@@ -60,9 +53,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: quarkus
+  name: people
   labels:
-    app: quarkus
+    app: people
 spec:
   ports:
     - name: httpo
@@ -74,13 +67,14 @@ spec:
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: quarkus
+  name: people
   labels:
-    app: quarkus
+    app: people
 spec:
   to:
     kind: Service
-    name: quarkus
+    name: people
     weight: 100
   port:
     targetPort: http
+

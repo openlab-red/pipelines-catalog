@@ -56,8 +56,6 @@ spec:
       params:
       - name: APP_NAME
         value: "$(params.APP_NAME)"
-
-
   - name: deploy-prod
     params:
     - name: ARGS
@@ -70,7 +68,6 @@ spec:
       - name: cluster
         resource: prod-cluster
     runAfter:
-    - build-s2i
     - deploy-dev
     taskRef:
       name: openshift-client-kubecfg
