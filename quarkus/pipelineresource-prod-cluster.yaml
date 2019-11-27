@@ -9,16 +9,14 @@ spec:
       value: prod-cluster
     - name: username
       value: pipeline
+    - name: namespace
+      value: <prod-namespace-prod-cluster>
+    - name: url
+      value: {{OCP_API_PROD}}
   secrets:
     - fieldName: token
       secretKey: tokenKey
       secretName: cluster-prod-secret
     - fieldName: cadata
       secretKey: cadataKey
-      secretName: cluster-prod-secret
-    - fieldName: url
-      secretKey: url
-      secretName: cluster-prod-secret
-    - fieldName: namespace
-      secretKey: namespace
       secretName: cluster-prod-secret
