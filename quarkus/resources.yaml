@@ -23,7 +23,7 @@ spec:
           - quarkus
         from:
           kind: ImageStreamTag
-          name: quarkus:latest
+          name: people:latest
       type: ImageChange
   strategy:
     type: Rolling
