@@ -1,19 +1,4 @@
 ---
-apiVersion: image.openshift.io/v1
-kind: ImageStream
-metadata:
-  labels:
-    app: people
-  name: people
-spec:
-  tags:
-    - name: latest
-      from:
-        kind: DockerImage
-        name: 'quay.apps.ocp.bdmsky.net/radudd/people:latest'
-      referencePolicy:
-        type: Source
----
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
@@ -35,26 +20,12 @@ spec:
     spec:
       containers:
         - name: quarkus
-          image: ''
-          imagePullPolicy: IfNotPresent
+          image: openshift/hello-openshift
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 3
-            periodSeconds: 5
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
-            initialDelaySeconds: 3
-            periodSeconds: 5
-            timeoutSeconds: 5
           resources:
             requests:
               memory: "128Mi"
